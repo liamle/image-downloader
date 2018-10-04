@@ -28,6 +28,7 @@
     chrome.downloads.onDeterminingFilename.addListener(suggestNewFilename);
 
     $('#download_button').on('click', downloadImages);
+    $('#download_button_1688').on('click', downloadw1688Images);
 
     if (ls.show_url_filter === 'true') {
       $('#filter_textbox').on('keyup', filterImages);
@@ -214,6 +215,7 @@
   var allImages = [];
   var visibleImages = [];
   var linkedImages = {};
+  var w1688Images = [];
 
   // Add images to `allImages` and trigger filtration
   // `send_images.js` is injected into all frames of the active tab, so this listener may be called multiple times
@@ -222,6 +224,11 @@
     for (var i = 0; i < result.images.length; i++) {
       if (allImages.indexOf(result.images[i]) === -1) {
         allImages.push(result.images[i]);
+      }
+    }
+    for(var i = 0; i < result.w1688Images.length; i++){
+      if(w1688Images.indexOf(result.w1688Images[i]) === -1){
+        w1688Images.push(result.w1688Images[i]);
       }
     }
     filterImages();
@@ -370,6 +377,12 @@
       }
       images_table.append(images_row);
     }
+  }
+  
+  function downloadw1688Images(){
+    w1688Images.forEach(function(img) {
+      chrome.downloads.download({ url: img });
+    });
   }
 
   function downloadImages() {

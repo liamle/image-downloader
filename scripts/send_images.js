@@ -9,7 +9,15 @@
     extractImagesFromTags() {
       return [].slice.apply(document.querySelectorAll('img, a, [style]')).map(imageDownloader.extractImageFromElement);
     },
-
+    extract1688Images(){
+      return [].slice.apply(document.querySelectorAll('li')).map(imageDownloader.extract1688Element);
+    },
+    extract1688Element(element){
+      if(element.className.toLowerCase() === 'tab-trigger active' || element.className.toLowerCase() === 'tab-trigger '){
+        return element.attributes.getNamedItem('data-img').value;
+      }
+      return '';
+    },
     extractImagesFromStyles() {
       const imagesFromStyles = [];
       for (let i = 0; i < document.styleSheets.length; i++) {
@@ -100,11 +108,18 @@
     ).map(imageDownloader.relativeUrlToAbsolute)
   );
 
+  imageDownloader.w1688Images = imageDownloader.removeDuplicateOrEmpty(
+    imageDownloader.extract1688Images()
+  );
+
   chrome.runtime.sendMessage({
     linkedImages: imageDownloader.linkedImages,
-    images: imageDownloader.images
+    images: imageDownloader.images,
+    w1688Images : imageDownloader.w1688Images
   });
 
   imageDownloader.linkedImages = null;
   imageDownloader.images = null;
+  imageDownloader.w1688Images = null;
+
 }());
